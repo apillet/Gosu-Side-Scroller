@@ -2,29 +2,41 @@ require "rubygems"
 require "gosu"
 
 class Player
-  def initialize(window)
-    if FileTest.exists? "forward.png"
-      @image = Gosu::Image.new(window, "forward.png", false)
-    else
-      puts "forward.png is missing!"
-    end
+  def initialize(window, startx, starty, image, speed, maxspeed)
+    @image = Gosu::Image.new(window, image.to_s, false)
     if FileTest.exists? "engine.aif"
       @burn = Gosu::Sample.new(window, "engine.aif")
     else
       puts "engine.aif is missing!"
     end
-    
+    @speed = speed
+    @maxspeed = maxspeed
     @playing = @burn.play(0)
-    @x = 100.0
-    @y = 100.0
+    @startx = startx
+    @starty = starty
+    @x = startx
+    @y = starty
     @angle = 0.0
     @vel_x = 0.0
     @vel_y = 0.0
   end
   
+  def x
+    return @x
+  end
+  
+  def y
+    return @y
+  end
+  
+  def chase(target)
+    @angle = Gosu::angle(@x,@y,target.x,target.y)
+    accelerate
+  end
+  
   def reset
-    @x = 100.0
-    @y = 100.0
+    @x = @startx
+    @y = @starty
     @angle = 0.0
     @vel_x = 0.0
     @vel_y = 0.0
@@ -47,8 +59,13 @@ class Player
     unless @playing.playing?
       @playing = @burn.play
     end
-    @vel_x += Gosu::offset_x(@angle, 0.5)
-    @vel_y += Gosu::offset_y(@angle, 0.5)
+    
+    if @vel_x + Gosu::offset_x(@angle, @speed) < @maxspeed
+      @vel_x += Gosu::offset_x(@angle, @speed)
+    end
+    if @vel_y + Gosu::offset_y(@angle, @speed) < @maxspeed
+      @vel_y += Gosu::offset_y(@angle, @speed)
+    end
   end
   
   def deccelerate
@@ -72,7 +89,8 @@ class GameWindow < Gosu::Window
     super(1280,1024,false)
     self.caption = "Will's first spriting with Gosu!"
     
-    @player = Player.new(self)
+    @player = Player.new(self, 100,100, "forward.png", 0.5, 7.5)
+    @enemy = Player.new(self, 400,400, "enemy.png", 0.2, 5)
   end
   
   
@@ -91,13 +109,17 @@ class GameWindow < Gosu::Window
     end
     if button_down? Gosu::Button::KbSpace then
       @player.reset
+      @enemy.reset
     end
     
     @player.move
+    @enemy.chase(@player)
+    @enemy.move
   end
   
   def draw
     @player.draw
+    @enemy.draw
   end
   
   def button_down(id)
@@ -110,5 +132,3 @@ end
 
 window = GameWindow.new
 window.show
-
-
