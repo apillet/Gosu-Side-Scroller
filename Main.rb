@@ -2,6 +2,9 @@ require "rubygems"
 require "gosu"
 
 class Player
+  
+  attr_reader :x, :y
+  
   def initialize(window, startx, starty, image, speed, maxspeed)
     @image = Gosu::Image.new(window, image.to_s, false)
     if FileTest.exists? "engine.aif"
@@ -19,14 +22,6 @@ class Player
     @angle = 0.0
     @vel_x = 0.0
     @vel_y = 0.0
-  end
-  
-  def x
-    return @x
-  end
-  
-  def y
-    return @y
   end
   
   def chase(target)
