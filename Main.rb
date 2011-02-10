@@ -17,11 +17,7 @@ class Player
     @playing = @burn.play(0)
     @startx = startx
     @starty = starty
-    @x = startx
-    @y = starty
-    @angle = 0.0
-    @vel_x = 0.0
-    @vel_y = 0.0
+    reset
   end
   
   def chase(target)
