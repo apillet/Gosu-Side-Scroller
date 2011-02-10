@@ -7,11 +7,7 @@ class Player
   
   def initialize(window, startx, starty, image, speed, maxspeed)
     @image = Gosu::Image.new(window, image.to_s, false)
-    if FileTest.exists? "engine.aif"
-      @burn = Gosu::Sample.new(window, "engine.aif")
-    else
-      puts "engine.aif is missing!"
-    end
+    @burn = Gosu::Sample.new(window, "engine.aif")
     @speed = speed
     @maxspeed = maxspeed
     @playing = @burn.play(0)
