@@ -79,7 +79,7 @@ protected
   end
 end
 
-
+include Gosu
 
 class GameWindow < Gosu::Window
   def initialize
@@ -88,23 +88,19 @@ class GameWindow < Gosu::Window
     
     @player = Player.new(self, 100,100, "forward.png", 0.5, 7.5)
     @enemy = Player.new(self, 400,400, "enemy.png", 0.2, 5)
+    
+    @input = { :up    => [KbUp, GpButton0],
+               :left  => [KbLeft, GpLeft],
+               :right => [KbRight, GpRight] }
   end
   
-  
   def update
-    if button_down? Gosu::Button::KbLeft or button_down? Gosu::Button::GpLeft then
-      @player.turn_left
-    end
-    if button_down? Gosu::Button::KbRight or button_down? Gosu::Button::GpRight then
-      @player.turn_right
-    end
-    if button_down? Gosu::Button::KbUp or button_down? Gosu::Button::GpButton0 then
-      @player.accelerate
-    end
-    if button_down? Gosu::Button::KbDown
-      @player.deccelerate
-    end
-    if button_down? Gosu::Button::KbSpace then
+    @player.turn_left   if pressed?(:left)
+    @player.turn_right  if pressed?(:right)
+    @player.accelerate  if pressed?(:up)
+    @player.deccelerate if button_down?(KbDown)
+
+    if button_down? KbSpace
       @player.reset
       @enemy.reset
     end
@@ -120,11 +116,16 @@ class GameWindow < Gosu::Window
   end
   
   def button_down(id)
-    if id == Gosu::Button::KbEscape
+    if id == KbEscape
       close
     end
   end
-  
+
+protected
+
+  def pressed?(key)
+    @input[key].detect { |k| button_down?(k) }
+  end
 end
 
 window = GameWindow.new
