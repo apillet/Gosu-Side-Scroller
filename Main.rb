@@ -6,7 +6,7 @@ class Player
   attr_reader :x, :y
   
   def initialize(window, startx, starty, image, speed, maxspeed)
-    @image = Gosu::Image.new(window, image.to_s, false)
+    @image = Gosu::Image.new(window, image, false)
     @burn = Gosu::Sample.new(window, "engine.aif")
     @speed = speed
     @maxspeed = maxspeed
@@ -17,7 +17,7 @@ class Player
   end
   
   def chase(target)
-    @angle = Gosu::angle(@x,@y,target.x,target.y)
+    @angle = Gosu::angle(@x, @y, target.x, target.y)
     accelerate
   end
   
@@ -83,11 +83,11 @@ include Gosu
 
 class GameWindow < Gosu::Window
   def initialize
-    super(1280,1024,false)
+    super(1280, 1024, false)
     self.caption = "Will's first spriting with Gosu!"
     
-    @player = Player.new(self, 100,100, "forward.png", 0.5, 7.5)
-    @enemy = Player.new(self, 400,400, "enemy.png", 0.2, 5)
+    @player = Player.new(self, 100, 100, "forward.png", 0.5, 7.5)
+    @enemy = Player.new(self, 400, 400, "enemy.png", 0.2, 5)
     
     @input = { :up    => [KbUp, GpButton0],
                :left  => [KbLeft, GpLeft],
@@ -116,9 +116,7 @@ class GameWindow < Gosu::Window
   end
   
   def button_down(id)
-    if id == KbEscape
-      close
-    end
+    close if id == KbEscape
   end
 
 protected
