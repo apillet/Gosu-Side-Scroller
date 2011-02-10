@@ -47,11 +47,11 @@ class Player
       @playing = @burn.play
     end
     
-    if @vel_x + Gosu::offset_x(@angle, @speed) < @maxspeed
-      @vel_x += Gosu::offset_x(@angle, @speed)
+    if @vel_x + offset_x < @maxspeed
+      @vel_x += offset_x
     end
-    if @vel_y + Gosu::offset_y(@angle, @speed) < @maxspeed
-      @vel_y += Gosu::offset_y(@angle, @speed)
+    if @vel_y + offset_y < @maxspeed
+      @vel_y += offset_y
     end
   end
   
@@ -66,6 +66,16 @@ class Player
   
   def draw
     @image.draw_rot(@x, @y, 1, @angle + 90)
+  end
+  
+protected
+
+  def offset_x
+    Gosu::offset_x(@angle, @speed)
+  end
+  
+  def offset_y
+    Gosu::offset_y(@angle, @speed)
   end
 end
 
